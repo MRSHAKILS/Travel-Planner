@@ -27,7 +27,7 @@ body {
 
 body {
   margin: 0;
-  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-family: var(--font-jakarta), "Segoe UI", sans-serif;
   color: var(--text-strong);
   background:
     radial-gradient(1200px 500px at 15% -10%, rgba(62, 117, 255, 0.35), transparent 60%),
