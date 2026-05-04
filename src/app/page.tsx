@@ -1,8 +1,6 @@
-import dynamic from "next/dynamic";
 import { AnimatedSection } from "@/components/ui/animated-section";
+import { GlobeView } from "@/components/globe/globe-view";
 import { getDestinations } from "@/lib/travel-data";
-
-const GlobeView = dynamic(() => import("@/components/globe/globe-view").then((m) => m.GlobeView), { ssr: false });
 
 export default async function HomePage() {
   const destinations = await getDestinations();

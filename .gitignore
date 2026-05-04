@@ -1,6 +1,7 @@
 .next
 node_modules
-.env*
+.env
+.env.*
 !.env.example
 coverage
 dist
