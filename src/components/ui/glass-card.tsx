@@ -1,12 +1,8 @@
-export function GlassCard({
-  children,
-  style,
-}: {
-  children: React.ReactNode;
-  style?: React.CSSProperties;
-}) {
+import type { CSSProperties } from "react";
+
+export function GlassCard({ children, style }: { children: React.ReactNode; style?: CSSProperties }) {
   return (
-    <article className="glass" style={{ borderRadius: "var(--radius-lg)", padding: "1rem", ...style }}>
+    <article className="panel" style={style}>
       {children}
     </article>
   );

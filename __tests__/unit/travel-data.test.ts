@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { buildContinentChart } from "@/lib/travel-data";
 
 describe("buildContinentChart", () => {

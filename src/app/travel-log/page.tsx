@@ -11,12 +11,15 @@ export default async function TravelLogPage() {
   ]);
 
   return (
-    <div className="container" style={{ padding: "1.2rem 0 2.4rem" }}>
+    <div className="container page">
       <AnimatedSection>
-        <h1 style={{ marginBottom: "0.35rem", fontSize: "clamp(1.9rem, 4.4vw, 3rem)" }}>Travel Log</h1>
-        <p style={{ color: "var(--text-soft)", marginTop: 0 }}>
-          Track your progress with live stats and a clean global coverage snapshot.
-        </p>
+        <div className="hero-copy">
+          <div>
+            <p className="eyebrow">Travel Log</p>
+            <h1 className="page-title">Where the miles add up.</h1>
+          </div>
+          <p className="page-subtitle">Track your continents, country count, and favorite trip rituals in a clean dashboard.</p>
+        </div>
       </AnimatedSection>
       <AnimatedSection delay={0.1}>
         <TravelLogClient userId={DEMO_USER_ID} initialStats={initialStats} initialProgress={initialProgress} />

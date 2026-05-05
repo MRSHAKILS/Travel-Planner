@@ -6,12 +6,17 @@ export default async function HomePage() {
   const destinations = await getDestinations();
 
   return (
-    <div className="container" style={{ padding: "1.2rem 0 2.4rem" }}>
+    <div className="container page">
       <AnimatedSection>
-        <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", marginBottom: "0.4rem" }}>Find Your Next Horizon</h1>
-        <p style={{ color: "var(--text-soft)", maxWidth: 700, marginTop: 0 }}>
-          Navigate the globe, tap destination beacons, and jump straight into your personal travel dashboard.
-        </p>
+        <div className="hero-copy">
+          <div>
+            <p className="eyebrow">Interactive Globe</p>
+            <h1 className="page-title">Find your next horizon.</h1>
+          </div>
+          <p className="page-subtitle">
+            Spin the world, pick a destination, and move straight into a travel log that feels calm, crisp, and alive.
+          </p>
+        </div>
       </AnimatedSection>
       <AnimatedSection delay={0.1}>
         <GlobeView destinations={destinations} />

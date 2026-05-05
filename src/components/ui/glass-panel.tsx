@@ -9,7 +9,7 @@ export function GlassPanel({
 }) {
   return (
     <GlassCard>
-      {title ? <h2 style={{ marginTop: 0 }}>{title}</h2> : null}
+      {title ? <h2 className="panel-title">{title}</h2> : null}
       {children}
     </GlassCard>
   );

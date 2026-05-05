@@ -24,21 +24,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(3, 10, 18, 0.96)",
-              display: "grid",
-              placeItems: "center",
-              zIndex: 90,
-            }}
+            className="preloader"
           >
             <motion.div
-              initial={{ scale: 0.92, opacity: 0.3 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-              className="glass"
-              style={{ borderRadius: 18, padding: "1rem 1.4rem", letterSpacing: "0.2em" }}
+              initial={{ rotate: -8, scale: 0.94, opacity: 0.4 }}
+              animate={{ rotate: 8, scale: 1, opacity: 1 }}
+              transition={{ duration: 0.9, repeat: Infinity, repeatType: "reverse" }}
+              className="preloader-mark"
             >
               WONDERLUST
             </motion.div>
@@ -46,19 +38,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         ) : null}
       </AnimatePresence>
 
-      <header className="container" style={{ paddingTop: "1rem", position: "relative", zIndex: 2 }}>
-        <nav
-          className="glass"
-          style={{
-            borderRadius: 20,
-            padding: "0.8rem 1rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <strong style={{ letterSpacing: "0.08em" }}>WONDERLUST</strong>
-          <div style={{ display: "flex", gap: "0.8rem", color: "var(--text-soft)" }}>
+      <header className="container">
+        <nav className="app-nav">
+          <strong className="brand">Wonderlust</strong>
+          <div className="nav-links">
             <NavLink href="/" active={pathname === "/"}>
               Globe
             </NavLink>
@@ -78,14 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      style={{
-        color: active ? "var(--text-strong)" : "var(--text-soft)",
-        borderBottom: active ? "1px solid rgba(138, 214, 255, 0.7)" : "1px solid transparent",
-        paddingBottom: "2px",
-      }}
-    >
+    <Link href={href} className={`nav-link${active ? " nav-link-active" : ""}`}>
       {children}
     </Link>
   );
