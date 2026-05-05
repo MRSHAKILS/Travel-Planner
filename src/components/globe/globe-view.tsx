@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import type { Destination } from "@/types/travel";
@@ -362,14 +362,42 @@ function Earth({
 
 export function GlobeView({ destinations }: { destinations: Destination[] }) {
   const [selected, setSelected] = useState<Destination | null>(null);
+  const [autoPlay, setAutoPlay] = useState(true);
   const router = useRouter();
-  const selectDestination = (destination: Destination) => setSelected(destination);
+  const selectDestination = useCallback((destination: Destination, source: "auto" | "manual" = "manual") => {
+    setSelected(destination);
+    window.localStorage.setItem("wonderlust:selectedDestination", destination.slug);
+    window.dispatchEvent(new CustomEvent("wonderlust:destination-change", { detail: destination.slug }));
+    if (source === "manual") setAutoPlay(false);
+  }, []);
   const featured = selected ?? destinations[0] ?? null;
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setSelected(destinations[0] ?? null), 2300);
+    const savedSlug = window.localStorage.getItem("wonderlust:selectedDestination");
+    const savedDestination = destinations.find((destination) => destination.slug === savedSlug);
+    const timer = window.setTimeout(() => {
+      const destination = savedDestination ?? destinations[0];
+      if (destination) selectDestination(destination, "auto");
+    }, 2300);
     return () => window.clearTimeout(timer);
-  }, [destinations]);
+  }, [destinations, selectDestination]);
+
+  useEffect(() => {
+    if (!autoPlay || destinations.length < 2) return;
+    const timer = window.setInterval(() => {
+      setSelected((current) => {
+        const currentIndex = Math.max(
+          0,
+          destinations.findIndex((destination) => destination.id === current?.id),
+        );
+        const next = destinations[(currentIndex + 1) % destinations.length];
+        window.localStorage.setItem("wonderlust:selectedDestination", next.slug);
+        window.dispatchEvent(new CustomEvent("wonderlust:destination-change", { detail: next.slug }));
+        return next;
+      });
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, [autoPlay, destinations]);
 
   return (
     <section className="globe-stage" aria-label="Interactive destination globe">
@@ -413,6 +441,11 @@ export function GlobeView({ destinations }: { destinations: Destination[] }) {
               <strong>{featured.curatedStays}</strong>
               curated stays
             </span>
+          </div>
+
+          <div className="carousel-status">
+            <span>{autoPlay ? "Auto touring destinations" : "Manual selection"}</span>
+            <button onClick={() => setAutoPlay((value) => !value)}>{autoPlay ? "Pause" : "Resume"}</button>
           </div>
 
           <div className="destination-stack">

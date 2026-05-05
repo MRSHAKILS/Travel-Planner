@@ -8,10 +8,24 @@ import { useEffect, useState } from "react";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
+  const [selectedDestination, setSelectedDestination] = useState("kyoto");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setLoading(false), 1500);
     return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const syncDestination = () => {
+      setSelectedDestination(window.localStorage.getItem("wonderlust:selectedDestination") ?? "kyoto");
+    };
+    syncDestination();
+    window.addEventListener("storage", syncDestination);
+    window.addEventListener("wonderlust:destination-change", syncDestination);
+    return () => {
+      window.removeEventListener("storage", syncDestination);
+      window.removeEventListener("wonderlust:destination-change", syncDestination);
+    };
   }, []);
 
   return (
@@ -51,7 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <NavLink href="/" active={pathname === "/"}>
               Globe
             </NavLink>
-            <NavLink href="/travel-log" active={pathname === "/travel-log"}>
+            <NavLink href={`/travel-log?destination=${selectedDestination}`} active={pathname === "/travel-log"}>
               Travel Log
             </NavLink>
             <NavLink href="/auth" active={pathname === "/auth"}>
