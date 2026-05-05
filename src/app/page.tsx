@@ -1,6 +1,7 @@
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { GlobeView } from "@/components/globe/globe-view";
 import { getDestinations } from "@/lib/travel-data";
+import { TravelPlanner } from "@/components/recommendation/travel-planner";
 
 export default async function HomePage() {
   const destinations = await getDestinations();
@@ -20,6 +21,9 @@ export default async function HomePage() {
       </AnimatedSection>
       <AnimatedSection delay={0.1}>
         <GlobeView destinations={destinations} />
+      </AnimatedSection>
+      <AnimatedSection delay={0.18}>
+        <TravelPlanner />
       </AnimatedSection>
     </div>
   );

@@ -1,11 +1,27 @@
 export type Destination = {
   id: string;
+  slug: string;
   name: string;
   country: string;
   continent: string;
   lat: number;
   lng: number;
   spotlight: string;
+  heroSummary: string;
+  plannedMiles: string;
+  curatedStays: number;
+  bestFor: string;
+  tripLength: string;
+  budget: string;
+  highlights: string[];
+  timeline: TripTimelineEntry[];
+  savedPlans: string[];
+};
+
+export type TripTimelineEntry = {
+  time: string;
+  title: string;
+  description: string;
 };
 
 export type TripLogEntry = {

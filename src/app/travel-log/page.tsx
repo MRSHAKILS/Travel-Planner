@@ -1,10 +1,16 @@
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { TravelLogClient } from "@/components/dashboard/travel-log-client";
-import { getContinentProgress, getUserTravelStats } from "@/lib/travel-data";
+import { getContinentProgress, getDestinationBySlug, getUserTravelStats } from "@/lib/travel-data";
 
 const DEMO_USER_ID = "demo-user";
 
-export default async function TravelLogPage() {
+export default async function TravelLogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ destination?: string }>;
+}) {
+  const { destination: destinationSlug } = await searchParams;
+  const selectedDestination = getDestinationBySlug(destinationSlug);
   const [initialStats, initialProgress] = await Promise.all([
     getUserTravelStats(DEMO_USER_ID),
     getContinentProgress(DEMO_USER_ID),
@@ -22,7 +28,12 @@ export default async function TravelLogPage() {
         </div>
       </AnimatedSection>
       <AnimatedSection delay={0.1}>
-        <TravelLogClient userId={DEMO_USER_ID} initialStats={initialStats} initialProgress={initialProgress} />
+        <TravelLogClient
+          userId={DEMO_USER_ID}
+          initialStats={initialStats}
+          initialProgress={initialProgress}
+          selectedDestination={selectedDestination}
+        />
       </AnimatedSection>
     </div>
   );

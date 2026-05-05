@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import type { Destination } from "@/types/travel";
@@ -289,7 +289,7 @@ function DestinationPin({
         <meshBasicMaterial color={active ? "#26314d" : "#ef775a"} transparent opacity={active ? 0.2 : 0.16} />
       </mesh>
       {active ? (
-        <Html position={[0.18, 0.14, 0]} center distanceFactor={7} zIndexRange={[20, 0]}>
+        <Html position={[0.14, 0.12, 0]} center distanceFactor={9} zIndexRange={[20, 0]}>
           <div className="map-pin-label">
             <strong>{destination.name}</strong>
             <span>{destination.country}</span>
@@ -315,6 +315,7 @@ function Earth({
   onPinSelect: (d: Destination) => void;
 }) {
   const globe = useRef<THREE.Group>(null);
+  const introElapsed = useRef(0);
   const earthTexture = useMemo(() => createEarthTexture(), []);
   const focusQuaternion = useMemo(
     () => (focusedDestination ? getFocusQuaternion(focusedDestination) : null),
@@ -323,7 +324,10 @@ function Earth({
 
   useFrame((_, delta) => {
     if (!globe.current) return;
-    if (focusQuaternion) {
+    introElapsed.current += delta;
+    if (introElapsed.current < 2.2) {
+      globe.current.rotation.y += delta * 0.22;
+    } else if (focusQuaternion) {
       globe.current.quaternion.slerp(focusQuaternion, 1 - Math.pow(0.04, delta));
     } else {
       globe.current.rotation.y += delta * 0.08;
@@ -357,9 +361,15 @@ function Earth({
 }
 
 export function GlobeView({ destinations }: { destinations: Destination[] }) {
-  const [selected, setSelected] = useState<Destination | null>(destinations[0] ?? null);
+  const [selected, setSelected] = useState<Destination | null>(null);
   const router = useRouter();
   const selectDestination = (destination: Destination) => setSelected(destination);
+  const featured = selected ?? destinations[0] ?? null;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSelected(destinations[0] ?? null), 2300);
+    return () => window.clearTimeout(timer);
+  }, [destinations]);
 
   return (
     <section className="globe-stage" aria-label="Interactive destination globe">
@@ -370,37 +380,37 @@ export function GlobeView({ destinations }: { destinations: Destination[] }) {
         </div>
         <Canvas
           dpr={[1, 1.7]}
-          camera={{ position: [0, 0.06, 3.85], fov: 34 }}
+          camera={{ position: [0, 0.02, 6.15], fov: 30 }}
           gl={{ antialias: true, alpha: true }}
         >
           <ambientLight intensity={1.32} />
           <directionalLight position={[3, 3, 5]} intensity={2.15} color="#ffffff" />
           <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#ef775a" />
           <Earth destinations={destinations} focusedDestination={selected} onPinSelect={selectDestination} />
-          <OrbitControls enablePan={false} minDistance={2.7} maxDistance={6.2} rotateSpeed={0.65} />
+          <OrbitControls enablePan={false} minDistance={4.8} maxDistance={8.2} rotateSpeed={0.65} />
         </Canvas>
       </div>
 
-      {selected ? (
+      {featured ? (
         <aside className="destination-panel" aria-label="Selected destination details">
           <div className="featured-destination">
-            <p className="panel-eyebrow">{selected.continent}</p>
+            <p className="panel-eyebrow">{featured.continent}</p>
             <h2>
-              {selected.name}, {selected.country}
+              {featured.name}, {featured.country}
             </h2>
-            <p>{selected.spotlight}</p>
-            <button className="primary-button" onClick={() => router.push("/travel-log")}>
+            <p>{featured.heroSummary}</p>
+            <button className="primary-button" onClick={() => router.push(`/travel-log?destination=${featured.slug}`)}>
               Open Travel Log
             </button>
           </div>
 
           <div className="route-stats" aria-label="Trip snapshot">
             <span>
-              <strong>3.2k</strong>
+              <strong>{featured.plannedMiles}</strong>
               planned miles
             </span>
             <span>
-              <strong>8</strong>
+              <strong>{featured.curatedStays}</strong>
               curated stays
             </span>
           </div>
@@ -409,7 +419,7 @@ export function GlobeView({ destinations }: { destinations: Destination[] }) {
             {destinations.map((destination) => (
               <button
                 key={destination.id}
-                className={`destination-card${destination.id === selected.id ? " destination-card-active" : ""}`}
+                className={`destination-card${destination.id === featured.id ? " destination-card-active" : ""}`}
                 onClick={() => selectDestination(destination)}
               >
                 <span>
