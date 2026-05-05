@@ -29,6 +29,33 @@ const mockDestinations: Destination[] = [
     lng: 18.4241,
     spotlight: "Ocean drives, vineyards, and mountain air.",
   },
+  {
+    id: "4",
+    name: "Reykjavik",
+    country: "Iceland",
+    continent: "Europe",
+    lat: 64.1466,
+    lng: -21.9426,
+    spotlight: "Thermal lagoons, lava fields, and midnight-sun road trips.",
+  },
+  {
+    id: "5",
+    name: "Marrakesh",
+    country: "Morocco",
+    continent: "Africa",
+    lat: 31.6295,
+    lng: -7.9811,
+    spotlight: "Courtyard riads, spice markets, and desert-edge evenings.",
+  },
+  {
+    id: "6",
+    name: "Queenstown",
+    country: "New Zealand",
+    continent: "Oceania",
+    lat: -45.0312,
+    lng: 168.6626,
+    spotlight: "Alpine lake views with a little adrenaline built in.",
+  },
 ];
 
 const allContinents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania", "Antarctica"];

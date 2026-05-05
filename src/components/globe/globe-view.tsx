@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
@@ -68,60 +68,148 @@ function createEarthTexture() {
     ctx.stroke();
   };
 
+  const land = "#e9eed8";
+  const dry = "#eadfbd";
+  const green = "#d7ead5";
+  const ice = "#f6f7ef";
+
   drawLand(
     [
-      [-167, 66],
-      [-135, 72],
-      [-95, 56],
-      [-78, 30],
-      [-94, 15],
-      [-122, 22],
-      [-146, 48],
+      [-168, 71],
+      [-141, 70],
+      [-126, 57],
+      [-123, 48],
+      [-117, 32],
+      [-96, 24],
+      [-82, 26],
+      [-66, 45],
+      [-53, 50],
+      [-66, 59],
+      [-95, 70],
+      [-130, 72],
     ],
-    "#eff5df",
+    land,
   );
   drawLand(
     [
-      [-82, 11],
-      [-51, 5],
-      [-37, -21],
-      [-55, -56],
-      [-75, -30],
+      [-73, 83],
+      [-18, 80],
+      [-16, 70],
+      [-40, 61],
+      [-52, 65],
+      [-62, 75],
     ],
-    "#d6ead6",
+    ice,
   );
   drawLand(
     [
-      [-12, 36],
-      [30, 58],
-      [72, 50],
-      [62, 22],
-      [28, 4],
-      [-7, 22],
+      [-116, 31],
+      [-102, 22],
+      [-91, 17],
+      [-83, 9],
+      [-79, 8],
+      [-86, 18],
+      [-98, 26],
     ],
-    "#f0ead3",
+    dry,
   );
   drawLand(
     [
-      [-18, 31],
-      [34, 32],
-      [50, 4],
-      [28, -35],
-      [5, -34],
-      [-16, 5],
+      [-80, 11],
+      [-63, 8],
+      [-50, -1],
+      [-35, -9],
+      [-39, -23],
+      [-51, -35],
+      [-58, -54],
+      [-70, -47],
+      [-76, -24],
+      [-82, -4],
     ],
-    "#eadfbe",
+    green,
   );
   drawLand(
     [
-      [45, 55],
-      [110, 66],
-      [150, 45],
-      [135, 6],
-      [78, 10],
-      [48, 30],
+      [-10, 36],
+      [0, 51],
+      [16, 58],
+      [31, 56],
+      [41, 45],
+      [28, 37],
+      [11, 36],
+      [2, 42],
     ],
-    "#e3eed9",
+    land,
+  );
+  drawLand(
+    [
+      [-17, 33],
+      [10, 37],
+      [31, 31],
+      [51, 12],
+      [43, -12],
+      [30, -35],
+      [18, -35],
+      [8, -18],
+      [-7, 5],
+      [-16, 18],
+    ],
+    dry,
+  );
+  drawLand(
+    [
+      [31, 56],
+      [59, 68],
+      [105, 73],
+      [142, 61],
+      [164, 51],
+      [142, 36],
+      [122, 22],
+      [105, 18],
+      [88, 7],
+      [73, 19],
+      [61, 30],
+      [45, 38],
+    ],
+    land,
+  );
+  drawLand(
+    [
+      [44, 29],
+      [58, 25],
+      [67, 13],
+      [55, 10],
+      [46, 18],
+    ],
+    dry,
+  );
+  drawLand(
+    [
+      [68, 24],
+      [89, 23],
+      [79, 8],
+      [72, 6],
+    ],
+    green,
+  );
+  drawLand(
+    [
+      [95, 20],
+      [121, 20],
+      [118, 2],
+      [106, -7],
+      [96, 6],
+    ],
+    green,
+  );
+  drawLand(
+    [
+      [129, 45],
+      [146, 44],
+      [145, 31],
+      [132, 32],
+    ],
+    green,
   );
   drawLand(
     [
@@ -130,7 +218,29 @@ function createEarthTexture() {
       [146, -43],
       [118, -36],
     ],
-    "#f2dfbd",
+    dry,
+  );
+  drawLand(
+    [
+      [167, -34],
+      [178, -38],
+      [173, -46],
+      [166, -44],
+    ],
+    green,
+  );
+  drawLand(
+    [
+      [-180, -66],
+      [-120, -72],
+      [-40, -68],
+      [40, -73],
+      [120, -67],
+      [180, -70],
+      [180, -90],
+      [-180, -90],
+    ],
+    ice,
   );
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -141,40 +251,87 @@ function createEarthTexture() {
 
 function DestinationPin({
   destination,
+  active,
   onSelect,
 }: {
   destination: Destination;
+  active: boolean;
   onSelect: (destination: Destination) => void;
 }) {
   const position = toVector(destination.lat, destination.lng, 1.72);
 
   return (
     <group position={position}>
-      <mesh onClick={(event) => {
-        event.stopPropagation();
-        onSelect(destination);
-      }}>
-        <sphereGeometry args={[0.04, 20, 20]} />
-        <meshStandardMaterial color="#ef775a" emissive="#ef775a" emissiveIntensity={0.5} />
+      <mesh
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(destination);
+        }}
+      >
+        <sphereGeometry args={[0.16, 20, 20]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <mesh
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(destination);
+        }}
+      >
+        <sphereGeometry args={[active ? 0.055 : 0.04, 20, 20]} />
+        <meshStandardMaterial
+          color={active ? "#26314d" : "#ef775a"}
+          emissive={active ? "#26314d" : "#ef775a"}
+          emissiveIntensity={active ? 0.35 : 0.5}
+        />
       </mesh>
       <mesh>
-        <sphereGeometry args={[0.075, 20, 20]} />
-        <meshBasicMaterial color="#ef775a" transparent opacity={0.16} />
+        <sphereGeometry args={[active ? 0.11 : 0.075, 20, 20]} />
+        <meshBasicMaterial color={active ? "#26314d" : "#ef775a"} transparent opacity={active ? 0.2 : 0.16} />
       </mesh>
+      {active ? (
+        <Html position={[0.18, 0.14, 0]} center distanceFactor={7} zIndexRange={[20, 0]}>
+          <div className="map-pin-label">
+            <strong>{destination.name}</strong>
+            <span>{destination.country}</span>
+          </div>
+        </Html>
+      ) : null}
     </group>
   );
 }
 
-function Earth({ destinations, onPinSelect }: { destinations: Destination[]; onPinSelect: (d: Destination) => void }) {
+function getFocusQuaternion(destination: Destination) {
+  const target = toVector(destination.lat, destination.lng, 1).normalize();
+  return new THREE.Quaternion().setFromUnitVectors(target, new THREE.Vector3(0, 0, 1));
+}
+
+function Earth({
+  destinations,
+  focusedDestination,
+  onPinSelect,
+}: {
+  destinations: Destination[];
+  focusedDestination: Destination | null;
+  onPinSelect: (d: Destination) => void;
+}) {
   const globe = useRef<THREE.Group>(null);
   const earthTexture = useMemo(() => createEarthTexture(), []);
+  const focusQuaternion = useMemo(
+    () => (focusedDestination ? getFocusQuaternion(focusedDestination) : null),
+    [focusedDestination],
+  );
 
   useFrame((_, delta) => {
-    if (globe.current) globe.current.rotation.y += delta * 0.08;
+    if (!globe.current) return;
+    if (focusQuaternion) {
+      globe.current.quaternion.slerp(focusQuaternion, 1 - Math.pow(0.04, delta));
+    } else {
+      globe.current.rotation.y += delta * 0.08;
+    }
   });
 
   return (
-    <group ref={globe} rotation={[0.08, -0.55, -0.08]}>
+    <group ref={globe}>
       <mesh>
         <sphereGeometry args={[1.66, 96, 96]} />
         <meshStandardMaterial map={earthTexture} roughness={0.72} metalness={0.02} />
@@ -188,7 +345,12 @@ function Earth({ destinations, onPinSelect }: { destinations: Destination[]; onP
         <meshBasicMaterial color="#77d6d1" transparent opacity={0.12} side={THREE.BackSide} />
       </mesh>
       {destinations.map((destination) => (
-        <DestinationPin key={destination.id} destination={destination} onSelect={onPinSelect} />
+        <DestinationPin
+          key={destination.id}
+          destination={destination}
+          active={destination.id === focusedDestination?.id}
+          onSelect={onPinSelect}
+        />
       ))}
     </group>
   );
@@ -197,33 +359,70 @@ function Earth({ destinations, onPinSelect }: { destinations: Destination[]; onP
 export function GlobeView({ destinations }: { destinations: Destination[] }) {
   const [selected, setSelected] = useState<Destination | null>(destinations[0] ?? null);
   const router = useRouter();
+  const selectDestination = (destination: Destination) => setSelected(destination);
 
   return (
     <section className="globe-stage" aria-label="Interactive destination globe">
-      <Canvas
-        dpr={[1, 1.7]}
-        camera={{ position: [0, 0.16, 5], fov: 36 }}
-        gl={{ antialias: true, alpha: true }}
-      >
-        <ambientLight intensity={1.25} />
-        <directionalLight position={[3, 3, 5]} intensity={2.1} color="#ffffff" />
-        <directionalLight position={[-4, -1, -3]} intensity={0.55} color="#ef775a" />
-        <Earth destinations={destinations} onPinSelect={setSelected} />
-        <OrbitControls enablePan={false} minDistance={3.1} maxDistance={7} rotateSpeed={0.65} />
-      </Canvas>
+      <div className="globe-canvas-panel">
+        <div className="globe-kicker">
+          <span>Live atlas</span>
+          <strong>{destinations.length} pins</strong>
+        </div>
+        <Canvas
+          dpr={[1, 1.7]}
+          camera={{ position: [0, 0.06, 3.85], fov: 34 }}
+          gl={{ antialias: true, alpha: true }}
+        >
+          <ambientLight intensity={1.32} />
+          <directionalLight position={[3, 3, 5]} intensity={2.15} color="#ffffff" />
+          <directionalLight position={[-4, -1, -3]} intensity={0.6} color="#ef775a" />
+          <Earth destinations={destinations} focusedDestination={selected} onPinSelect={selectDestination} />
+          <OrbitControls enablePan={false} minDistance={2.7} maxDistance={6.2} rotateSpeed={0.65} />
+        </Canvas>
+      </div>
 
       {selected ? (
-        <div className="destination-dock">
-          <div>
-            <strong className="dock-title">
+        <aside className="destination-panel" aria-label="Selected destination details">
+          <div className="featured-destination">
+            <p className="panel-eyebrow">{selected.continent}</p>
+            <h2>
               {selected.name}, {selected.country}
-            </strong>
-            <p className="dock-copy">{selected.spotlight}</p>
+            </h2>
+            <p>{selected.spotlight}</p>
+            <button className="primary-button" onClick={() => router.push("/travel-log")}>
+              Open Travel Log
+            </button>
           </div>
-          <button className="primary-button" onClick={() => router.push("/travel-log")}>
-            Open Log
-          </button>
-        </div>
+
+          <div className="route-stats" aria-label="Trip snapshot">
+            <span>
+              <strong>3.2k</strong>
+              planned miles
+            </span>
+            <span>
+              <strong>8</strong>
+              curated stays
+            </span>
+          </div>
+
+          <div className="destination-stack">
+            {destinations.map((destination) => (
+              <button
+                key={destination.id}
+                className={`destination-card${destination.id === selected.id ? " destination-card-active" : ""}`}
+                onClick={() => selectDestination(destination)}
+              >
+                <span>
+                  <strong>
+                    {destination.name}, {destination.country}
+                  </strong>
+                  <small>{destination.spotlight}</small>
+                </span>
+                <em>{destination.continent}</em>
+              </button>
+            ))}
+          </div>
+        </aside>
       ) : null}
     </section>
   );
